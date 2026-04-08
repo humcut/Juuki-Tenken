@@ -318,12 +318,12 @@
                     equipmentId: appState.equipmentId
                 };
 
-                const res = await fetch(GAS_API_URL, { 
+                const res = await fetch(GAS_API_URL, {
                     method: "POST",
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(payload)
                 }).then(r => r.json());
-                
+
                 if (res.success) {
                     renderApp(res);
                 } else {
@@ -371,7 +371,7 @@
             // 種別テキストから点検項目グループを判定 (部分一致)
             let checkGroup = "バックホウ"; // デフォルト
             const typeStr = eq.type ? eq.type.toString() : "";
-            
+
             if (typeStr.includes("油圧ショベル") || typeStr.includes("バックホウ") || typeStr.includes("ユンボ")) {
                 checkGroup = "バックホウ";
             } else if (typeStr.includes("ブル・ドーザー") || typeStr.includes("ブルドーザー") || typeStr.includes("ブル")) {
@@ -554,9 +554,9 @@
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(payload)
                 });
-                
+
                 const res = await response.json();
-                
+
                 if (res.success) {
                     alert("点検データを送信しました！");
                     // フォームリセット
