@@ -243,6 +243,13 @@
 
         // Signature Pad
         const canvas = document.getElementById('signature-pad');
+
+        // スマホでのサイン中に画面がスクロールしてしまうのを完全に防ぐ処理
+        const preventScroll = (e) => { e.preventDefault(); };
+        canvas.addEventListener('touchstart', preventScroll, { passive: false });
+        canvas.addEventListener('touchmove', preventScroll, { passive: false });
+        canvas.addEventListener('touchend', preventScroll, { passive: false });
+
         function resizeCanvas() {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
             canvas.width = canvas.offsetWidth * ratio;
