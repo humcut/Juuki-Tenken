@@ -161,9 +161,9 @@
     </div>
 
     <script>
-        // 設定値 (必ずご自身の環境に合わせて書き換えてください)
-        const GAS_API_URL = "YOUR_GAS_WEB_APP_URL_HERE"; // GASで発行されたウェブアプリURL
-        const LIFF_ID = "YOUR_LIFF_ID_HERE"; // LINE Developersで発行されたLIFF ID
+        // 設定値 (GitHub Actionsに設定した環境変数からデプロイ時に自動置換されます)
+        const GAS_API_URL = "%%GAS_API_URL%%"; 
+        const LIFF_ID = "%%LIFF_ID%%"; 
         
         // 状態
         let appState = {
