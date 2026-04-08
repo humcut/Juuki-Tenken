@@ -541,30 +541,40 @@
 
             UI.btnSubmit.innerText = "サーバーへ送信中...";
 
-            google.script.run
-                .withSuccessHandler(res => {
-                    UI.btnSubmit.disabled = false;
-                    UI.btnSubmit.innerText = "点検データを送信する";
-                    if (res.success) {
-                        alert("点検データを送信しました！");
-                        // フォームリセット
-                        document.getElementById('inspectionForm').reset();
-                        signaturePad.clear();
-                        UI.defectSection.classList.add('hidden');
-                        if (!appState.isGuest) {
-                            // ゲストでない場合のリセット後ケア
-                        }
-                        if (LIFF_ID !== "YOUR_LIFF_ID") liff.closeWindow();
-                    } else {
-                        alert("サーバーエラー: " + res.error);
-                    }
-                })
-                .withFailureHandler(err => {
-                    UI.btnSubmit.disabled = false;
-                    UI.btnSubmit.innerText = "点検データを送信する";
-                    alert("通信エラー: " + err.message);
-                })
-                .uploadDataAndFiles(formData, compressedFiles);
+            try {
+                // 送信処理 (POST fetch)
+                const payload = {
+                    action: 'uploadDataAndFiles',
+                    data: formData,
+                    compressedFiles: compressedFiles
+                };
+
+                const response = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const res = await response.json();
+                
+                if (res.success) {
+                    alert("点検データを送信しました！");
+                    // フォームリセット
+                    document.getElementById('inspectionForm').reset();
+                    signaturePad.clear();
+                    UI.defectSection.classList.add('hidden');
+                    if (LIFF_ID !== "YOUR_LIFF_ID") liff.closeWindow();
+                } else {
+                    alert("サーバーエラー: " + res.error);
+                }
+
+            } catch (err) {
+                alert("通信エラー: " + err.message);
+                console.error(err);
+            } finally {
+                UI.btnSubmit.disabled = false;
+                UI.btnSubmit.innerText = "点検データを送信する";
+            }
         });
 
         // 実行開始
