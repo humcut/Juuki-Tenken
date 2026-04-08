@@ -361,7 +361,7 @@
 
             // 重機情報
             const eq = data.equipment;
-            UI.equipName.innerText = `${eq.name} / ${eq.model} (${eq.type})`;
+            UI.equipName.innerText = `${eq.name} [${eq.type}]`;
 
             // 現場の初期選択
             if (eq.siteId) {
