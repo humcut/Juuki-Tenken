@@ -368,8 +368,20 @@
                 UI.siteSelect.value = eq.siteId;
             }
 
+            // 種別テキストから点検項目グループを判定 (部分一致)
+            let checkGroup = "バックホウ"; // デフォルト
+            const typeStr = eq.type ? eq.type.toString() : "";
+            
+            if (typeStr.includes("油圧ショベル") || typeStr.includes("バックホウ") || typeStr.includes("ユンボ")) {
+                checkGroup = "バックホウ";
+            } else if (typeStr.includes("ブル・ドーザー") || typeStr.includes("ブルドーザー") || typeStr.includes("ブル")) {
+                checkGroup = "ブルドーザー";
+            } else if (typeStr.includes("振動ローラー") || typeStr.includes("振動ローラ") || typeStr.includes("ローラー")) {
+                checkGroup = "振動ローラ";
+            }
+
             // 点検項目の生成
-            const items = CHECK_ITEMS[eq.type] || CHECK_ITEMS["バックホウ"];
+            const items = CHECK_ITEMS[checkGroup] || CHECK_ITEMS["バックホウ"];
             appState.checkItemCount = items.length;
 
             let html = '';
