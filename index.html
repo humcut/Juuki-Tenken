@@ -216,23 +216,32 @@
         async function initialize() {
             try {
                 UI.loadingText.innerText = "[STEP 1] 定数チェック中...";
-                if (GAS_API_URL.includes("YOUR_GAS_WEB")) {
-                    throw new Error("GAS_API_URLが設定されていません。コード内の定数を書き換えてください。");
+                console.log("===== DEBUG INFO =====");
+                console.log("GAS_API_URL:", GAS_API_URL);
+                console.log("LIFF_ID:", LIFF_ID);
+                console.log("======================");
+
+                if (GAS_API_URL.includes("%%GAS_API")) {
+                    throw new Error("置換エラー: GAS_API_URLが '%%GAS_API_URL%%' のままです。GitHub Actionsの置換ができていません。");
                 }
-                if (LIFF_ID.includes("YOUR_LIFF_ID")) {
-                    throw new Error("LIFF_IDが設定されていません。コード内の定数を書き換えてください。");
+                if (LIFF_ID.includes("%%LIFF")) {
+                    throw new Error("置換エラー: LIFF_IDが '%%LIFF_ID%%' のままです。");
                 }
 
                 UI.loadingText.innerText = "[STEP 2] URLパラメータ取得...";
-                // 標準のURLパラメータ取得機能を利用
                 const urlParams = new URLSearchParams(window.location.search);
                 appState.equipmentId = urlParams.get('id') || "";
 
                 UI.loadingText.innerText = "[STEP 3] LIFF SDKの初期化中... (liffId: " + LIFF_ID + ")";
-                await Promise.race([
-                    liff.init({ liffId: LIFF_ID }),
-                    new Promise((_, reject) => setTimeout(() => reject(new Error("LIFF初期化完了タイムアウト")), 5000))
-                ]);
+                
+                try {
+                    await Promise.race([
+                        liff.init({ liffId: LIFF_ID }),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error("LIFF初期化完了タイムアウト")), 5000))
+                    ]);
+                } catch(e) {
+                    throw new Error("[LIFF SDK ERROR] " + e.message);
+                }
                 
                 UI.loadingText.innerText = "[STEP 4] プロフィール取得中...";
                 if (liff.isLoggedIn()) {
