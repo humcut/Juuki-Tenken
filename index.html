@@ -310,9 +310,20 @@
          */
         async function fetchInitialData() {
             try {
-                const endpoint = `${GAS_API_URL}?action=getInitialData&userId=${encodeURIComponent(appState.userId)}&equipmentId=${encodeURIComponent(appState.equipmentId)}`;
-                const res = await fetch(endpoint, { method: "GET" }).then(r => r.json());
+                // iOS環境でのGAS宛てGETリクエストはCORS/リダイレクトエラー(Load failed)が起きやすいため、
+                // 強制的に POST(text/plain) モードでデータを取得するように変更
+                const payload = {
+                    action: 'getInitialData',
+                    userId: appState.userId,
+                    equipmentId: appState.equipmentId
+                };
 
+                const res = await fetch(GAS_API_URL, { 
+                    method: "POST",
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload)
+                }).then(r => r.json());
+                
                 if (res.success) {
                     renderApp(res);
                 } else {
